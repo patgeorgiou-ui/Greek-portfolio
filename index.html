@@ -1,0 +1,370 @@
+import { useState } from "react";
+
+const vocab = [
+  { greek: "το εστιατόριο", transliteration: "to estiatorio", english: "the restaurant", emoji: "🍽️" },
+  { greek: "ο σερβιτόρος", transliteration: "o servitoros", english: "the waiter (m)", emoji: "🧑‍🍳" },
+  { greek: "η σερβιτόρα", transliteration: "i servitora", english: "the waitress (f)", emoji: "👩‍🍳" },
+  { greek: "ο κατάλογος", transliteration: "o katalogos", english: "the menu", emoji: "📋" },
+  { greek: "το πιάτο", transliteration: "to piato", english: "the dish / plate", emoji: "🍛" },
+  { greek: "ο λογαριασμός", transliteration: "o logarismos", english: "the bill", emoji: "🧾" },
+  { greek: "η παραγγελία", transliteration: "i parangelía", english: "the order", emoji: "📝" },
+  { greek: "το ποτήρι", transliteration: "to potiri", english: "the glass", emoji: "🥂" },
+  { greek: "νόστιμος", transliteration: "nostimos", english: "delicious / tasty", emoji: "😋" },
+  { greek: "χορτάτος", transliteration: "hortatos", english: "full (after eating)", emoji: "😌" },
+  { greek: "πεινάω", transliteration: "pinao", english: "I am hungry", emoji: "🤤" },
+  { greek: "κρατάω τραπέζι", transliteration: "kratao trapezi", english: "to book a table", emoji: "📅" },
+];
+
+const greekParagraph = `Χθες το βράδυ, πήγα με τους φίλους μου σε ένα ελληνικό εστιατόριο στο κέντρο της πόλης. Κρατήσαμε τραπέζι για έξι άτομα και ο σερβιτόρος μάς έφερε αμέσως τον κατάλογο. Παραγγείλαμε μεζέδες, μουσακά και φρέσκο ψάρι. Το φαγητό ήταν πολύ νόστιμο! Στο τέλος, ζητήσαμε τον λογαριασμό και πληρώσαμε μαζί. Φύγαμε χορτάτοι και πολύ χαρούμενοι.`;
+
+const translation = `Last night, I went with my friends to a Greek restaurant in the city centre. We booked a table for six people and the waiter brought us the menu straight away. We ordered mezedes (starters), moussaka and fresh fish. The food was very delicious! At the end, we asked for the bill and paid together. We left full and very happy.`;
+
+const annotations = [
+  { id: 1, x: 18, y: 22, greek: "το παράθυρο", english: "the window", anchor: "right" },
+  { id: 2, x: 50, y: 10, greek: "ο ουρανός", english: "the sky", anchor: "bottom" },
+  { id: 3, x: 78, y: 30, greek: "τα λουλούδια", english: "the flowers", anchor: "left" },
+  { id: 4, x: 28, y: 58, greek: "η καρέκλα", english: "the chair", anchor: "right" },
+  { id: 5, x: 50, y: 52, greek: "το τραπέζι", english: "the table", anchor: "bottom" },
+  { id: 6, x: 65, y: 62, greek: "το ποτήρι κρασί", english: "the wine glass", anchor: "left" },
+  { id: 7, x: 42, y: 68, greek: "το πιάτο", english: "the plate", anchor: "top" },
+  { id: 8, x: 20, y: 80, greek: "το πάτωμα", english: "the floor", anchor: "right" },
+  { id: 9, x: 75, y: 78, greek: "ο κατάλογος", english: "the menu", anchor: "left" },
+];
+
+function SceneIllustration({ annotations }) {
+  const [active, setActive] = useState(null);
+
+  return (
+    <div style={{ position: "relative", width: "100%", borderRadius: "16px", overflow: "hidden", background: "#f5ede0", boxShadow: "0 8px 40px rgba(0,0,0,0.13)" }}>
+      {/* SVG illustrated restaurant scene */}
+      <svg viewBox="0 0 700 420" width="100%" style={{ display: "block" }}>
+        {/* Sky / wall background */}
+        <rect x="0" y="0" width="700" height="420" fill="#fef3e2" />
+        {/* Upper wall */}
+        <rect x="0" y="0" width="700" height="230" fill="#e8d5b7" />
+        {/* Lower floor */}
+        <rect x="0" y="310" width="700" height="110" fill="#c8a97e" />
+        {/* Wainscoting */}
+        <rect x="0" y="295" width="700" height="18" fill="#b08050" />
+
+        {/* Window */}
+        <rect x="60" y="40" width="130" height="160" rx="8" fill="#aad4f5" stroke="#8b6914" strokeWidth="6" />
+        <rect x="60" y="115" width="130" height="6" fill="#8b6914" />
+        <rect x="124" y="40" width="6" height="160" fill="#8b6914" />
+        {/* Window sky */}
+        <rect x="63" y="43" width="123" height="69" fill="#87ceeb" />
+        <rect x="63" y="118" width="123" height="79" fill="#87ceeb" />
+        {/* Clouds in window */}
+        <ellipse cx="100" cy="70" rx="22" ry="12" fill="white" opacity="0.8" />
+        <ellipse cx="130" cy="65" rx="18" ry="10" fill="white" opacity="0.7" />
+
+        {/* Flowers on windowsill */}
+        <rect x="185" y="197" width="60" height="12" rx="3" fill="#7a5c3a" />
+        <ellipse cx="195" cy="185" rx="8" ry="8" fill="#e74c6a" />
+        <ellipse cx="213" cy="178" rx="8" ry="8" fill="#f5a623" />
+        <ellipse cx="231" cy="183" rx="8" ry="8" fill="#e74c6a" />
+        <line x1="195" y1="193" x2="195" y2="197" stroke="#4a7c59" strokeWidth="2" />
+        <line x1="213" y1="186" x2="213" y2="197" stroke="#4a7c59" strokeWidth="2" />
+        <line x1="231" y1="191" x2="231" y2="197" stroke="#4a7c59" strokeWidth="2" />
+
+        {/* Table */}
+        <ellipse cx="350" cy="290" rx="160" ry="40" fill="#8B4513" />
+        <ellipse cx="350" cy="282" rx="160" ry="38" fill="#a0522d" />
+        {/* Tablecloth */}
+        <ellipse cx="350" cy="278" rx="155" ry="35" fill="#fff9f0" stroke="#e8d5b7" strokeWidth="2" />
+        {/* Table legs */}
+        <rect x="270" y="310" width="16" height="70" rx="4" fill="#7a3e0e" />
+        <rect x="414" y="310" width="16" height="70" rx="4" fill="#7a3e0e" />
+
+        {/* Plate */}
+        <ellipse cx="320" cy="272" rx="45" ry="18" fill="#e0e0e0" />
+        <ellipse cx="320" cy="270" rx="40" ry="16" fill="#f5f0e8" />
+        {/* Food on plate */}
+        <ellipse cx="320" cy="268" rx="28" ry="11" fill="#c8a060" />
+        <ellipse cx="315" cy="266" rx="12" ry="7" fill="#8b4513" opacity="0.7" />
+        <ellipse cx="328" cy="265" rx="8" ry="5" fill="#6aaa5a" opacity="0.8" />
+
+        {/* Wine glass */}
+        <ellipse cx="430" cy="272" rx="20" ry="7" fill="#c0a090" />
+        <path d="M418 272 Q414 250 422 238 L438 238 Q446 250 442 272 Z" fill="#e8c4a0" stroke="#c0a090" strokeWidth="1" />
+        <path d="M422 238 L438 238 L435 232 L425 232 Z" fill="#e8c4a0" stroke="#c0a090" strokeWidth="1" />
+        <rect x="428" y="208" width="4" height="24" fill="#c0a090" />
+        <ellipse cx="430" cy="210" rx="16" ry="6" fill="#c0a090" />
+        {/* Wine */}
+        <path d="M422 250 Q414 250 422 238 L438 238 Q446 250 438 250 Z" fill="#9b2335" opacity="0.6" />
+
+        {/* Menu */}
+        <rect x="480" y="235" width="55" height="75" rx="5" fill="#2c5f2e" />
+        <rect x="484" y="239" width="47" height="67" rx="3" fill="#f5f0e8" />
+        <line x1="491" y1="252" x2="524" y2="252" stroke="#999" strokeWidth="1.5" />
+        <line x1="491" y1="262" x2="524" y2="262" stroke="#999" strokeWidth="1.5" />
+        <line x1="491" y1="272" x2="518" y2="272" stroke="#999" strokeWidth="1.5" />
+        <line x1="491" y1="282" x2="520" y2="282" stroke="#999" strokeWidth="1.5" />
+        <line x1="491" y1="292" x2="515" y2="292" stroke="#999" strokeWidth="1.5" />
+        <text x="491" y="248" fontSize="7" fill="#2c5f2e" fontWeight="bold">ΜΕΝΟΥ</text>
+
+        {/* Left chair */}
+        <rect x="115" y="275" width="90" height="65" rx="8" fill="#5c3317" />
+        <rect x="118" y="278" width="84" height="55" rx="6" fill="#7a4520" />
+        <rect x="118" y="275" width="84" height="22" rx="6" fill="#9b5a2a" />
+        {/* Chair legs */}
+        <rect x="120" y="335" width="10" height="45" rx="3" fill="#5c3317" />
+        <rect x="192" y="335" width="10" height="45" rx="3" fill="#5c3317" />
+
+        {/* Right chair */}
+        <rect x="495" y="275" width="90" height="65" rx="8" fill="#5c3317" />
+        <rect x="498" y="278" width="84" height="55" rx="6" fill="#7a4520" />
+        <rect x="498" y="275" width="84" height="22" rx="6" fill="#9b5a2a" />
+        <rect x="500" y="335" width="10" height="45" rx="3" fill="#5c3317" />
+        <rect x="572" y="335" width="10" height="45" rx="3" fill="#5c3317" />
+
+        {/* Decorative wall art */}
+        <rect x="520" y="50" width="120" height="90" rx="6" fill="#fff" stroke="#c8a060" strokeWidth="4" />
+        <ellipse cx="580" cy="93" rx="40" ry="30" fill="#87ceeb" opacity="0.5" />
+        <ellipse cx="570" cy="85" rx="15" ry="20" fill="#4a7c59" opacity="0.7" />
+        <ellipse cx="595" cy="80" rx="10" ry="15" fill="#4a7c59" opacity="0.6" />
+
+        {/* Candle on table */}
+        <rect x="355" y="240" width="10" height="30" rx="2" fill="#fffff0" stroke="#e0d0b0" strokeWidth="1" />
+        <ellipse cx="360" cy="240" rx="5" ry="3" fill="#e0d0b0" />
+        <path d="M360 235 Q357 228 360 222 Q363 228 360 235" fill="#f5a623" />
+        <path d="M360 233 Q359 230 360 226 Q361 230 360 233" fill="#fff3c0" />
+      </svg>
+
+      {/* Annotation pins */}
+      {annotations.map((a) => (
+        <button
+          key={a.id}
+          onClick={() => setActive(active === a.id ? null : a.id)}
+          style={{
+            position: "absolute",
+            left: `${a.x}%`,
+            top: `${a.y}%`,
+            transform: "translate(-50%, -50%)",
+            background: active === a.id ? "#2c5f2e" : "#e8d5b7",
+            border: active === a.id ? "2.5px solid #2c5f2e" : "2.5px solid #8b6914",
+            borderRadius: "50%",
+            width: 28,
+            height: 28,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 13,
+            fontWeight: "bold",
+            color: active === a.id ? "white" : "#5c3317",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
+            zIndex: 10,
+            transition: "all 0.18s",
+          }}
+          title={a.greek}
+        >
+          {a.id}
+        </button>
+      ))}
+
+      {/* Tooltip */}
+      {active !== null && (() => {
+        const ann = annotations.find(a => a.id === active);
+        return (
+          <div style={{
+            position: "absolute",
+            left: `${ann.x}%`,
+            top: `${ann.y}%`,
+            transform: ann.anchor === "left" ? "translate(20px, -50%)" :
+                       ann.anchor === "right" ? "translate(calc(-100% - 20px), -50%)" :
+                       ann.anchor === "top" ? "translate(-50%, calc(-100% - 20px))" :
+                       "translate(-50%, 20px)",
+            background: "white",
+            border: "2px solid #2c5f2e",
+            borderRadius: 10,
+            padding: "8px 14px",
+            zIndex: 20,
+            minWidth: 150,
+            boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
+            pointerEvents: "none",
+          }}>
+            <div style={{ fontFamily: "'Georgia', serif", fontSize: 16, fontWeight: "bold", color: "#2c5f2e" }}>{ann.greek}</div>
+            <div style={{ fontSize: 12, color: "#888", fontStyle: "italic", marginTop: 2 }}>{ann.english}</div>
+          </div>
+        );
+      })()}
+    </div>
+  );
+}
+
+export default function GreekPortfolio() {
+  const [flipped, setFlipped] = useState({});
+  const [showTrans, setShowTrans] = useState(false);
+
+  const toggleFlip = (i) => setFlipped(f => ({ ...f, [i]: !f[i] }));
+
+  return (
+    <div style={{
+      fontFamily: "'Georgia', 'Times New Roman', serif",
+      background: "#fef9f2",
+      minHeight: "100vh",
+      padding: "0 0 60px",
+      color: "#2a1a0e",
+    }}>
+      {/* Header */}
+      <div style={{
+        background: "linear-gradient(135deg, #2c5f2e 0%, #1a3d1c 100%)",
+        padding: "40px 32px 32px",
+        textAlign: "center",
+        position: "relative",
+        overflow: "hidden",
+      }}>
+        <div style={{ fontSize: 13, letterSpacing: 4, color: "#a8d5a2", textTransform: "uppercase", marginBottom: 8 }}>Greek Language Portfolio · A2 / B1</div>
+        <h1 style={{ margin: 0, fontSize: 38, fontWeight: "normal", color: "#fff", letterSpacing: 1 }}>
+          Φαγητό &amp; Κοινωνικοποίηση
+        </h1>
+        <div style={{ fontSize: 15, color: "#a8d5a2", marginTop: 8, fontStyle: "italic" }}>Food &amp; Socialising — Theme 3</div>
+        {/* Greek pattern strip */}
+        <div style={{ marginTop: 22, display: "flex", justifyContent: "center", gap: 8, flexWrap: "wrap" }}>
+          {["🍽️","🥂","🫒","🍷","🫕","🥗","🍋","🫓"].map((e,i) => (
+            <span key={i} style={{ fontSize: 22, opacity: 0.7 }}>{e}</span>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ maxWidth: 820, margin: "0 auto", padding: "0 20px" }}>
+
+        {/* Section 1: Vocabulary */}
+        <section style={{ marginTop: 40 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20 }}>
+            <div style={{ width: 36, height: 36, background: "#2c5f2e", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: "bold", fontSize: 16, flexShrink: 0 }}>1</div>
+            <h2 style={{ margin: 0, fontSize: 22, fontWeight: "normal", color: "#2c5f2e", letterSpacing: 0.5 }}>Λεξιλόγιο — Vocabulary</h2>
+          </div>
+          <p style={{ margin: "0 0 18px", fontSize: 14, color: "#7a5c3a", fontStyle: "italic" }}>Tap a card to reveal the English translation.</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(175px, 1fr))", gap: 14 }}>
+            {vocab.map((v, i) => (
+              <div
+                key={i}
+                onClick={() => toggleFlip(i)}
+                style={{
+                  background: flipped[i] ? "#2c5f2e" : "#fff",
+                  border: "2px solid " + (flipped[i] ? "#2c5f2e" : "#e8d5b7"),
+                  borderRadius: 12,
+                  padding: "16px 14px",
+                  cursor: "pointer",
+                  transition: "all 0.22s",
+                  boxShadow: flipped[i] ? "0 4px 16px rgba(44,95,46,0.18)" : "0 2px 8px rgba(0,0,0,0.06)",
+                  textAlign: "center",
+                  minHeight: 90,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 6,
+                }}
+              >
+                {!flipped[i] ? (
+                  <>
+                    <div style={{ fontSize: 24 }}>{v.emoji}</div>
+                    <div style={{ fontSize: 15, fontWeight: "bold", color: "#2a1a0e" }}>{v.greek}</div>
+                    <div style={{ fontSize: 11, color: "#9a7a5a", fontStyle: "italic" }}>{v.transliteration}</div>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ fontSize: 24 }}>{v.emoji}</div>
+                    <div style={{ fontSize: 14, fontWeight: "bold", color: "white" }}>{v.english}</div>
+                    <div style={{ fontSize: 11, color: "#a8d5a2", fontStyle: "italic" }}>{v.greek}</div>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Section 2: Annotated Scene */}
+        <section style={{ marginTop: 48 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20 }}>
+            <div style={{ width: 36, height: 36, background: "#8b6914", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: "bold", fontSize: 16, flexShrink: 0 }}>2</div>
+            <h2 style={{ margin: 0, fontSize: 22, fontWeight: "normal", color: "#8b6914", letterSpacing: 0.5 }}>Εικόνα — Visual Scene</h2>
+          </div>
+          <p style={{ margin: "0 0 16px", fontSize: 14, color: "#7a5c3a", fontStyle: "italic" }}>Click the numbered pins to reveal Greek labels for each part of the restaurant scene.</p>
+          <SceneIllustration annotations={annotations} />
+          {/* Legend */}
+          <div style={{ marginTop: 18, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 8 }}>
+            {annotations.map(a => (
+              <div key={a.id} style={{ display: "flex", alignItems: "center", gap: 10, background: "#fff", border: "1.5px solid #e8d5b7", borderRadius: 8, padding: "8px 12px" }}>
+                <div style={{ width: 24, height: 24, background: "#8b6914", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontSize: 12, fontWeight: "bold", flexShrink: 0 }}>{a.id}</div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: "bold", color: "#2a1a0e" }}>{a.greek}</div>
+                  <div style={{ fontSize: 11, color: "#9a7a5a", fontStyle: "italic" }}>{a.english}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Section 3: Paragraph */}
+        <section style={{ marginTop: 48 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20 }}>
+            <div style={{ width: 36, height: 36, background: "#9b2335", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: "bold", fontSize: 16, flexShrink: 0 }}>3</div>
+            <h2 style={{ margin: 0, fontSize: 22, fontWeight: "normal", color: "#9b2335", letterSpacing: 0.5 }}>Κείμενο — Reading Passage</h2>
+          </div>
+          <div style={{ background: "#fff", border: "2px solid #e8d5b7", borderRadius: 16, padding: "28px 28px 20px", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
+            {/* Decorative quote mark */}
+            <div style={{ fontSize: 72, color: "#e8d5b7", lineHeight: 0.7, marginBottom: 14, fontFamily: "Georgia" }}>"</div>
+            <p style={{ fontSize: 17, lineHeight: 1.85, color: "#2a1a0e", margin: "0 0 24px" }}>
+              {greekParagraph}
+            </p>
+            <button
+              onClick={() => setShowTrans(!showTrans)}
+              style={{
+                background: showTrans ? "#9b2335" : "transparent",
+                color: showTrans ? "white" : "#9b2335",
+                border: "2px solid #9b2335",
+                borderRadius: 8,
+                padding: "9px 22px",
+                cursor: "pointer",
+                fontSize: 14,
+                fontFamily: "Georgia, serif",
+                transition: "all 0.2s",
+              }}
+            >
+              {showTrans ? "Hide Translation" : "🔍 Show English Translation"}
+            </button>
+            {showTrans && (
+              <div style={{ marginTop: 20, paddingTop: 20, borderTop: "1.5px dashed #e8d5b7" }}>
+                <div style={{ fontSize: 12, letterSpacing: 2, color: "#9b2335", textTransform: "uppercase", marginBottom: 8 }}>Translation</div>
+                <p style={{ fontSize: 15, lineHeight: 1.8, color: "#5c3317", fontStyle: "italic", margin: 0 }}>
+                  {translation}
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Key phrases box */}
+        <section style={{ marginTop: 40 }}>
+          <div style={{ background: "linear-gradient(135deg, #2c5f2e11 0%, #8b691411 100%)", border: "2px solid #e8d5b7", borderRadius: 16, padding: "24px 28px" }}>
+            <h3 style={{ margin: "0 0 16px", fontSize: 16, color: "#2c5f2e", letterSpacing: 1, textTransform: "uppercase" }}>💬 Useful Phrases at a Restaurant</h3>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 24px" }}>
+              {[
+                ["Έχετε τραπέζι για δύο;", "Do you have a table for two?"],
+                ["Θα ήθελα να παραγγείλω...", "I would like to order..."],
+                ["Τι μας συστήνετε;", "What do you recommend?"],
+                ["Ο λογαριασμός, παρακαλώ.", "The bill, please."],
+                ["Ήταν πολύ νόστιμο!", "It was very delicious!"],
+                ["Χωρίς γλουτένη, παρακαλώ.", "Without gluten, please."],
+              ].map(([gr, en], i) => (
+                <div key={i} style={{ padding: "10px 0", borderBottom: "1px solid #e8d5b7" }}>
+                  <div style={{ fontSize: 14, fontWeight: "bold", color: "#2a1a0e" }}>{gr}</div>
+                  <div style={{ fontSize: 12, color: "#7a5c3a", fontStyle: "italic", marginTop: 3 }}>{en}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <div style={{ marginTop: 48, textAlign: "center", fontSize: 12, color: "#bba080", letterSpacing: 2, textTransform: "uppercase" }}>
+          Greek Portfolio · Theme 3 · Restaurants &amp; Socialising
+        </div>
+      </div>
+    </div>
+  );
+}
